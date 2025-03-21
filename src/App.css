@@ -1,4 +1,4 @@
-/* #map {
-  height: 180px;
-  border: 1px solid green;
-} */
+#map {
+  height: 200px;
+  border: 2px solid #0a0;
+}

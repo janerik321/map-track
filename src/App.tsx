@@ -1,57 +1,42 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import {
-  MapContainer,
-  TileLayer,
-  useMap,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
-// import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.locatecontrol";
+import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
+import L from "leaflet";
+import MapView from "./views/MapView";
 
 function App() {
-  // const map = useMapEvents
-
   const [queryData, setQueryData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: "[out:json];node[amenity=drinking_water](58.75572130892272,5.524390487670898,58.973231941798524,5.762779712677002);out;",
-    };
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://overpass-api.de/api/interpreter",
-          fetchOptions
-        );
-        const data = await response.json();
-        setQueryData(data);
-        // console.log(response);
-        // console.log(data);
-      } catch (err) {
-        console.log(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  // interface elements {
-  //   id: number;
-  //   lat: number;
-  //   lon: number;
-  //   tags: object;
-  //   type: string;
-  // }
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const fetchOptions = {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: "[out:json];node[amenity=drinking_water](58.75572130892272,5.524390487670898,58.973231941798524,5.762779712677002);out;",
+  //   };
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://overpass-api.de/api/interpreter",
+  //         fetchOptions
+  //       );
+  //       const data = await response.json();
+  //       setQueryData(data);
+  //       // console.log(response);
+  //       // console.log(data);
+  //     } catch (err) {
+  //       console.log(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   interface QueryElements {
     id: number;
@@ -65,54 +50,39 @@ function App() {
     };
   }
 
-  interface QueryDataType {
-    elements: object;
-    generator: string;
-    osm3s: object;
-    version: number;
-  }
+  useEffect(() => {
+    const map = L.map("map").setView([58.9686, 5.7552], 17);
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    // map.addControl(new L.Control.Gps());
+    const marker = L.marker([58.9686, 5.7552]).addTo(map);
+    const circle = L.circle([58.9686, 5.7552], {
+      color: "red",
+      fillColor: "#70f",
+      fillOpacity: 0.5,
+      radius: 50,
+    }).addTo(map);
+  }, []);
+
   return (
     <>
-      <MapContainer
-        center={[58.968375, 5.756165]}
-        zoom={15}
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+      <div id="map"></div>
+      {console.log("test")}
+      <div>test</div>
+
+      {/* {queryData && !loading && (
         <>
-          <>
-            {/* <Marker position={[58.968375, 5.756165]}>
-              <Popup>Hello</Popup>
-            </Marker> */}
-          </>
+          {queryData.elements.map(({ id, lat, lon, tags }: QueryElements) =>
+            console.log(id, lat, lon, tags)
+          )}
         </>
-        {/* <Marker position={[58.968205, 5.756005]}></Marker> */}
-        {queryData && !loading && (
-          <>
-            {console.log(queryData)}
-            {/* {interface id} */}
-
-            {queryData.elements.map(({ id, lat, lon, tags }: QueryElements) => (
-              // {console.log(lat, lon)};
-
-              <Marker position={[lat, lon]} key={id}>
-                <Popup>
-                  <p>{tags.name}</p>
-                  {/* <br /> */}
-                  {tags.operator}
-                  <br />
-                  Fee: {tags.fee}
-                  <br />
-                  Capacity: {tags.capacity}
-                </Popup>
-              </Marker>
-            ))}
-          </>
-        )}
-      </MapContainer>
+      )} */}
+      <MapView />
     </>
   );
 }
