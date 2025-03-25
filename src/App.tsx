@@ -1,90 +1,84 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
-import "leaflet.locatecontrol";
-import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
-import L from "leaflet";
-import MapView from "./views/MapView";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 
-function App() {
-  const [queryData, setQueryData] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function App() {
+  const [geoCoordinates, setGeoCoordinates] = useState([58.9673242, 5.7291641]);
+  const [tileSelection, setTileSelection] = useState(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  );
+  let geoCoords = useRef([10, 10]);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const fetchOptions = {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: "[out:json];node[amenity=drinking_water](58.75572130892272,5.524390487670898,58.973231941798524,5.762779712677002);out;",
-  //   };
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         "https://overpass-api.de/api/interpreter",
-  //         fetchOptions
-  //       );
-  //       const data = await response.json();
-  //       setQueryData(data);
-  //       // console.log(response);
-  //       // console.log(data);
-  //     } catch (err) {
-  //       console.log(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+  function TestComponent() {
+    const map = useMap();
+    map.locate({ setView: true, maxZoom: 16 }),
+      console.log(
+        // map.fitWorld(),
+        // map.locate({ setView: true }),
+        map.getCenter()
+      );
 
-  interface QueryElements {
-    id: number;
-    lat: number;
-    lon: number;
-    tags: {
-      name: string;
-      operator: string;
-      fee: string;
-      capacity: number;
-    };
+    geoCoords = [map.getCenter().lat, map.getCenter().lng];
+    console.log(geoCoords);
+
+    return null;
   }
 
-  useEffect(() => {
-    const map = L.map("map").setView([58.9686, 5.7552], 17);
+  function button1() {
+    // useEffect(() => {
+    setGeoCoordinates((g) => (g = [58.9949252, 5.7291641]));
+    console.log(geoCoordinates);
+    // }, []);
+  }
+  function button2() {
+    // useEffect(() => {
+    setGeoCoordinates((g) => (g = [58.9673242, 5.7291641]));
+    console.log(geoCoordinates);
+    // }, []);
+  }
 
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+  function button3() {
+    // useEffect(() => {
+    // const map = useMap();
+    // console.log(map.getCenter);
+    setGeoCoordinates((g) => [g[0] + 0.001, 5.7291641]);
+    console.log(geoCoordinates);
+    // return null;
+    // }, []);
+  }
 
-    // map.addControl(new L.Control.Gps());
-    const marker = L.marker([58.9686, 5.7552]).addTo(map);
-    const circle = L.circle([58.9686, 5.7552], {
-      color: "red",
-      fillColor: "#70f",
-      fillOpacity: 0.5,
-      radius: 50,
-    }).addTo(map);
-  }, []);
+  function osm() {
+    setTileSelection("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+  }
+  function watercolor() {
+    setTileSelection(
+      "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"
+    );
+  }
 
   return (
     <>
-      <div id="map"></div>
-      {console.log("test")}
-      <div>test</div>
-
-      {/* {queryData && !loading && (
-        <>
-          {queryData.elements.map(({ id, lat, lon, tags }: QueryElements) =>
-            console.log(id, lat, lon, tags)
-          )}
-        </>
-      )} */}
-      <MapView />
+      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url={tileSelection}
+        />
+        <TestComponent />
+        {console.log(geoCoordinates)}
+        <Marker position={geoCoordinates}>
+          <Popup>
+            A pretty CSS3 popup. <br /> Easily customizable.
+          </Popup>
+        </Marker>
+      </MapContainer>
+      <div id="buttons">
+        <button onClick={button1}>1</button>
+        <button onClick={button2}>2</button>
+        <button onClick={button3}>↑</button>
+        <button onClick={osm}>OSM</button>
+        <button onClick={watercolor}>Watercolor</button>
+      </div>
     </>
   );
 }
-
-export default App;
