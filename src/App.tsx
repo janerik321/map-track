@@ -12,40 +12,38 @@ export default function App() {
 
   function TestComponent() {
     const map = useMap();
-    map.locate({ setView: true, maxZoom: 16 }),
-      console.log(
-        // map.fitWorld(),
-        // map.locate({ setView: true }),
-        map.getCenter()
-      );
+    map.locate({ setView: true, maxZoom: 16 }), //4
+      // console.log(
+      //   // map.fitWorld(),
+      //   // map.locate({ setView: true }),
+      //   map.getCenter()
+      // );
 
-    geoCoords = [map.getCenter().lat, map.getCenter().lng];
-    console.log(geoCoords);
-
+      (geoCoords.current = [map.getCenter().lat, map.getCenter().lng]); //3
+    console.log(geoCoords.current);
+    console.log(geoCoordinates);
     return null;
   }
 
   function button1() {
-    // useEffect(() => {
-    setGeoCoordinates((g) => (g = [58.9949252, 5.7291641]));
-    console.log(geoCoordinates);
-    // }, []);
+    console.log(geoCoords);
+    setGeoCoordinates(
+      // (g) => (g = [geoCoords.current[0], geoCoords.current[1]])
+      [geoCoords.current[0], geoCoords.current[1]] //2
+    );
+    // console.log(geoCoordinates);
   }
   function button2() {
-    // useEffect(() => {
-    setGeoCoordinates((g) => (g = [58.9673242, 5.7291641]));
-    console.log(geoCoordinates);
-    // }, []);
+    setGeoCoordinates((g) => (g = [58.9693242, 5.7591641]));
   }
 
   function button3() {
-    // useEffect(() => {
-    // const map = useMap();
-    // console.log(map.getCenter);
-    setGeoCoordinates((g) => [g[0] + 0.001, 5.7291641]);
-    console.log(geoCoordinates);
-    // return null;
-    // }, []);
+    setGeoCoordinates((g) => [g[0] + 0.0001, g[1]]);
+  }
+
+  function button4() {
+    // useMap().locate({ setView: true, maxZoom: 16 });
+    // TestComponent()
   }
 
   function osm() {
@@ -65,17 +63,20 @@ export default function App() {
           url={tileSelection}
         />
         <TestComponent />
-        {console.log(geoCoordinates)}
-        <Marker position={geoCoordinates}>
+
+        {/* {console.log(geoCoordinates)} */}
+        <Marker position={[geoCoordinates[0], geoCoordinates[1]]}>
+          {/*1*/}
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
         </Marker>
       </MapContainer>
       <div id="buttons">
-        <button onClick={button1}>1</button>
+        <button onClick={button1}>KH</button>
         <button onClick={button2}>2</button>
         <button onClick={button3}>↑</button>
+        <button onClick={button4}>֍</button>
         <button onClick={osm}>OSM</button>
         <button onClick={watercolor}>Watercolor</button>
       </div>
