@@ -10,6 +10,19 @@ export default function App() {
   );
   let geoCoords = useRef([10, 10]);
 
+  //////////////////////////////////////////////////////////////
+  interface Coordinates {
+    coords: {
+      latitude: number;
+      longitude: number;
+    };
+  }
+
+  function success(pos: Coordinates) {
+    console.log(pos.coords.latitude, pos.coords.longitude);
+  }
+  //////////////////////////////////////////////////////////////
+
   function TestComponent() {
     const map = useMap();
     map.locate({ setView: true, maxZoom: 16 }), //4
@@ -42,8 +55,7 @@ export default function App() {
   }
 
   function button4() {
-    // useMap().locate({ setView: true, maxZoom: 16 });
-    // TestComponent()
+    navigator.geolocation.watchPosition(success);
   }
 
   function osm() {
