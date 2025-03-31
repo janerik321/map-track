@@ -9,9 +9,10 @@ export default function App() {
   // console.log(Icon);
 
   const customIcon = new leaflet.Icon({
-    iconUrl: "./public/marker-icon-2x.png",
+    iconUrl: "./marker-icon-2x.png",
     iconSize: [25, 41],
     iconAnchor: [12.5, 41],
+    shadowUrl: "./marker-shadow.png",
   });
 
   const [geoCoordinates, setGeoCoordinates] = useState([58.9673242, 5.7291641]);
