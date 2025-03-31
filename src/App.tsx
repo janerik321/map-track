@@ -1,14 +1,25 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+// import { Icon } from "leaflet";
+import leaflet from "leaflet";
 
 export default function App() {
+  // console.log(Icon);
+
+  const customIcon = new leaflet.Icon({
+    iconUrl: "./public/marker-icon-2x.png",
+    iconSize: [25, 41],
+    iconAnchor: [12.5, 41],
+  });
+
   const [geoCoordinates, setGeoCoordinates] = useState([58.9673242, 5.7291641]);
   const [tileSelection, setTileSelection] = useState(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   );
   let geoCoords = useRef([10, 10]);
+  const [geoLocation, setGeoLocation] = useState([0, 0]);
 
   //////////////////////////////////////////////////////////////
   interface Coordinates {
@@ -20,6 +31,7 @@ export default function App() {
 
   function success(pos: Coordinates) {
     console.log(pos.coords.latitude, pos.coords.longitude);
+    setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
   }
   //////////////////////////////////////////////////////////////
 
@@ -47,7 +59,7 @@ export default function App() {
     // console.log(geoCoordinates);
   }
   function button2() {
-    setGeoCoordinates((g) => (g = [58.9693242, 5.7591641]));
+    setGeoCoordinates([58.9693242, 5.7591641]);
   }
 
   function button3() {
@@ -78,10 +90,12 @@ export default function App() {
 
         {/* {console.log(geoCoordinates)} */}
         <Marker position={[geoCoordinates[0], geoCoordinates[1]]}>
-          {/*1*/}
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
+        </Marker>
+        <Marker position={[geoLocation[0], geoLocation[1]]} icon={customIcon}>
+          <Popup>Geolocate</Popup>
         </Marker>
       </MapContainer>
       <div id="buttons">

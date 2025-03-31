@@ -11,7 +11,7 @@
 
 .leaflet-container {
   /* height: 100vh; */
-  height: calc(100vh - 30px);
+  height: calc(90vh - 30px);
   /* border: 2px solid #0a0; */
 }
 
