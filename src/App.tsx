@@ -51,6 +51,7 @@ export default function App() {
   const [tileSelection, setTileSelection] = useState(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   );
+  const [attribution, setAttribution] = useState("");
   let geoCoords = useRef([10, 10]);
   const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([
     // [startCoords],
@@ -120,20 +121,21 @@ export default function App() {
 
   function osm() {
     setTileSelection("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+    setAttribution(
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    );
   }
   function watercolor() {
-    setTileSelection(
-      "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"
+    setTileSelection("http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png");
+    setAttribution(
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &amp; USGS'
     );
   }
 
   return (
     <>
       <MapContainer center={[51.505, -0.09]} zoom={15} scrollWheelZoom={true}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url={tileSelection}
-        />
+        <TileLayer attribution={attribution} url={tileSelection} />
         <TestComponent />
 
         {/* {console.log(geoCoordinates)} */}
@@ -165,7 +167,7 @@ export default function App() {
         <button onClick={button3}>↑</button>
         <button onClick={button4}>֍</button>
         <button onClick={osm}>OSM</button>
-        <button onClick={watercolor}>Watercolor</button>
+        <button onClick={watercolor}>MTBMap</button>
       </div>
     </>
   );
