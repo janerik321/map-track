@@ -1,13 +1,18 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
-// import { Icon } from "leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  useMap,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
+
 import leaflet from "leaflet";
 
 export default function App() {
-  // console.log(Icon);
-
   const customIcon = new leaflet.Icon({
     iconUrl: "./marker-icon-2x.png",
     iconSize: [25, 41],
@@ -15,14 +20,6 @@ export default function App() {
     shadowUrl: "./marker-shadow.png",
   });
 
-  const [geoCoordinates, setGeoCoordinates] = useState([58.9673242, 5.7291641]);
-  const [tileSelection, setTileSelection] = useState(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  );
-  let geoCoords = useRef([10, 10]);
-  const [geoLocation, setGeoLocation] = useState([0, 0]);
-
-  //////////////////////////////////////////////////////////////
   interface Coordinates {
     coords: {
       latitude: number;
@@ -30,22 +27,78 @@ export default function App() {
     };
   }
 
+  // let startCoords = [];
+  function getCurrentPositionSuccess(pos: Coordinates) {
+    // startCoords = [pos.coords.latitude, pos.coords.longitude];
+    console.log([pos.coords.latitude, pos.coords.longitude]);
+    return [pos.coords.latitude, pos.coords.longitude];
+  }
+  const [geoLocation, setGeoLocation] = useState([5, 5]);
+
+  // function setCoordinates(pos: Coordinates) {
+  //   setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
+  // }
+  // navigator.geolocation.getCurrentPosition(setCoordinates);
+
+  console.log(
+    navigator.geolocation.getCurrentPosition(getCurrentPositionSuccess)
+  );
+
+  // const startCoords = [[]]
+
+  // useStates //
+  const [geoCoordinates, setGeoCoordinates] = useState([58.9673242, 5.7291641]);
+  const [tileSelection, setTileSelection] = useState(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  );
+  let geoCoords = useRef([10, 10]);
+  const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([
+    // [startCoords],
+    [58.96838677444153, 5.75613383989598],
+  ]);
+  /////////////////
+
+  console.log([
+    [1.2, 1.2],
+    [1.5, 1.5],
+  ]);
+  console.log(geoTrackCoordinates);
+
+  // geolocation //
+
+  function setCoordinates(pos: Coordinates) {
+    setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
+    console.log(geoLocation);
+  }
+
   function success(pos: Coordinates) {
     console.log(pos.coords.latitude, pos.coords.longitude);
+    setGeoTrackCoordinates((prev) => [
+      ...prev,
+      [pos.coords.latitude, pos.coords.longitude],
+    ]);
     setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
   }
-  //////////////////////////////////////////////////////////////
+
+  console.log(geoTrackCoordinates);
+  console.log(geoLocation);
+
+  function error() {}
+
+  useEffect(() => {
+    let options = {
+      enableHighAccuracy: true,
+    };
+    navigator.geolocation.getCurrentPosition(setCoordinates);
+    navigator.geolocation.watchPosition(success, error, options);
+  }, []);
+
+  /////////////////
 
   function TestComponent() {
     const map = useMap();
-    map.locate({ setView: true, maxZoom: 16 }), //4
-      // console.log(
-      //   // map.fitWorld(),
-      //   // map.locate({ setView: true }),
-      //   map.getCenter()
-      // );
-
-      (geoCoords.current = [map.getCenter().lat, map.getCenter().lng]); //3
+    map.locate({ setView: true, maxZoom: 17 }),
+      (geoCoords.current = [map.getCenter().lat, map.getCenter().lng]);
     console.log(geoCoords.current);
     console.log(geoCoordinates);
     return null;
@@ -53,11 +106,7 @@ export default function App() {
 
   function button1() {
     console.log(geoCoords);
-    setGeoCoordinates(
-      // (g) => (g = [geoCoords.current[0], geoCoords.current[1]])
-      [geoCoords.current[0], geoCoords.current[1]] //2
-    );
-    // console.log(geoCoordinates);
+    setGeoCoordinates([geoCoords.current[0], geoCoords.current[1]]);
   }
   function button2() {
     setGeoCoordinates([58.9693242, 5.7591641]);
@@ -67,9 +116,7 @@ export default function App() {
     setGeoCoordinates((g) => [g[0] + 0.0001, g[1]]);
   }
 
-  function button4() {
-    navigator.geolocation.watchPosition(success);
-  }
+  function button4() {}
 
   function osm() {
     setTileSelection("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
@@ -82,7 +129,7 @@ export default function App() {
 
   return (
     <>
-      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
+      <MapContainer center={[51.505, -0.09]} zoom={15} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url={tileSelection}
@@ -96,7 +143,20 @@ export default function App() {
           </Popup>
         </Marker>
         <Marker position={[geoLocation[0], geoLocation[1]]} icon={customIcon}>
-          <Popup>Geolocate</Popup>
+          <Popup>
+            Geolocate
+            <br />
+            {/* {geoTrackCoordinates.map((coordinates) => (
+              <p>
+                {coordinates.lat}
+                <br />
+                {coordinates.lng}
+              </p>
+            ))} */}
+          </Popup>
+          <Polyline
+            positions={geoTrackCoordinates as [number, number][]}
+          ></Polyline>
         </Marker>
       </MapContainer>
       <div id="buttons">
