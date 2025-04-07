@@ -14,7 +14,7 @@ export default function App() {
   );
 
   const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([]);
-  const [zoomLevel, setZoomLevel] = useState(16);
+  const [zoomLevel, setZoomLevel] = useState(null);
 
   return (
     <AppContext.Provider
