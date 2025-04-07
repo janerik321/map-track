@@ -13,10 +13,8 @@ export default function App() {
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   );
 
-  const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([
-    [58.96838677444153, 5.75613383989598],
-  ]);
-  const [zoomLevel, setZoomLevel] = useState(14);
+  const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(16);
 
   return (
     <AppContext.Provider

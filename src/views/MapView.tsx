@@ -44,13 +44,13 @@ export default function MapView() {
   // Getting starting position //
 
   function getCurrentPositionSuccess(pos: Coordinates) {
+    // console.log([pos.coords.latitude, pos.coords.longitude]);
     return [pos.coords.latitude, pos.coords.longitude];
   }
+
   const [geoLocation, setGeoLocation] = useState([5, 5]);
 
   navigator.geolocation.getCurrentPosition(getCurrentPositionSuccess);
-
-  // useStates //
 
   // geolocation //
 
@@ -75,6 +75,8 @@ export default function MapView() {
     navigator.geolocation.getCurrentPosition(setCoordinates);
     navigator.geolocation.watchPosition(success, error, options);
   }, []);
+
+  /////////////////////////////
 
   function button4() {}
 
