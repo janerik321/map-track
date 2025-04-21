@@ -15,6 +15,7 @@ export default function App() {
 
   const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(null);
+  const [centerMap, setCenterMap] = useState(true);
 
   return (
     <AppContext.Provider
@@ -27,6 +28,8 @@ export default function App() {
         setGeoTrackCoordinates,
         zoomLevel,
         setZoomLevel,
+        centerMap,
+        setCenterMap,
       }}
     >
       <MapView />

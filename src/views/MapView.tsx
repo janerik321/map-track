@@ -21,6 +21,8 @@ export default function MapView() {
     geoTrackCoordinates,
     setGeoTrackCoordinates,
     zoomLevel,
+    // centerMap,
+    setCenterMap,
   }: any = useContext(AppContext);
 
   // Marker icon //
@@ -64,6 +66,7 @@ export default function MapView() {
       [pos.coords.latitude, pos.coords.longitude],
     ]);
     setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
+    console.log(geoTrackCoordinates);
   }
 
   function error() {}
@@ -77,6 +80,10 @@ export default function MapView() {
   }, []);
 
   /////////////////////////////
+
+  function centerButton() {
+    setCenterMap(true);
+  }
 
   function button4() {}
 
@@ -111,7 +118,7 @@ export default function MapView() {
         </Marker>
       </MapContainer>
       <div id="buttons">
-        <button>Center</button>
+        <button onClick={centerButton}>Follow</button>
         <button onClick={button4}>🖋️</button>
         <button onClick={osm}>OSM</button>
         <button onClick={watercolor}>MTBMap</button>

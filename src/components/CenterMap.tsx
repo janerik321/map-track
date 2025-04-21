@@ -3,15 +3,25 @@ import { AppContext } from "../App";
 import { useMap } from "react-leaflet";
 
 export default function CenterMap() {
-  const { zoomLevel, setZoomLevel }: any = useContext(AppContext);
+  const { zoomLevel, setZoomLevel, centerMap, setCenterMap }: any =
+    useContext(AppContext);
 
   const map = useMap();
 
-  console.log(map.getZoom());
-  map.locate({ setView: true, maxZoom: zoomLevel });
+  if (centerMap) {
+    map.locate({ setView: true, maxZoom: zoomLevel });
+  }
+
+  // Trigger if user zooms in or out. Get current zoom and update zoomLevel to prevent map from going back to previous zoom level when map rerenders.
   map.on("zoomanim", function (e) {
-    console.log(e.zoom);
     setZoomLevel(e.zoom);
+    map.stopLocate();
+    setCenterMap(false);
+  });
+
+  map.on("movestart", function () {
+    map.stopLocate();
+    setCenterMap(false);
   });
 
   return null;
