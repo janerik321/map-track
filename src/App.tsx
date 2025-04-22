@@ -16,6 +16,10 @@ export default function App() {
   const [geoTrackCoordinates, setGeoTrackCoordinates] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(null);
   const [centerMap, setCenterMap] = useState(true);
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: "#225",
+    color: "#fffc",
+  });
 
   return (
     <AppContext.Provider
@@ -30,6 +34,8 @@ export default function App() {
         setZoomLevel,
         centerMap,
         setCenterMap,
+        buttonStyle,
+        setButtonStyle,
       }}
     >
       <MapView />

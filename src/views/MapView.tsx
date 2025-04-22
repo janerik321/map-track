@@ -21,8 +21,10 @@ export default function MapView() {
     geoTrackCoordinates,
     setGeoTrackCoordinates,
     zoomLevel,
-    // centerMap,
+    centerMap,
     setCenterMap,
+    buttonStyle,
+    setButtonStyle,
   }: any = useContext(AppContext);
 
   // Marker icon //
@@ -43,6 +45,8 @@ export default function MapView() {
     };
   }
 
+  // Active button color
+
   // Getting starting position //
 
   function getCurrentPositionSuccess(pos: Coordinates) {
@@ -58,6 +62,7 @@ export default function MapView() {
 
   function setCoordinates(pos: Coordinates) {
     setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
+    console.log(geoLocation);
   }
 
   function success(pos: Coordinates) {
@@ -67,6 +72,7 @@ export default function MapView() {
     ]);
     setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
     console.log(geoTrackCoordinates);
+    console.log(geoLocation);
   }
 
   function error() {}
@@ -82,7 +88,13 @@ export default function MapView() {
   /////////////////////////////
 
   function centerButton() {
-    setCenterMap(true);
+    if (!centerMap) {
+      setCenterMap(true);
+      setButtonStyle({ backgroundColor: "#225", color: "#fffc" });
+    } else {
+      setCenterMap(false);
+      setButtonStyle({});
+    }
   }
 
   function button4() {}
@@ -118,7 +130,9 @@ export default function MapView() {
         </Marker>
       </MapContainer>
       <div id="buttons">
-        <button onClick={centerButton}>Follow</button>
+        <button onClick={centerButton} style={buttonStyle}>
+          Follow
+        </button>
         <button onClick={button4}>🖋️</button>
         <button onClick={osm}>OSM</button>
         <button onClick={watercolor}>MTBMap</button>
