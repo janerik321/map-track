@@ -11,6 +11,7 @@ import {
 import leaflet from "leaflet";
 import CenterMap from "../components/CenterMap";
 import { AppContext } from "../App";
+import haversineDistance from "haversine-distance";
 
 export default function MapView() {
   const {
@@ -25,6 +26,8 @@ export default function MapView() {
     setCenterMap,
     buttonStyle,
     setButtonStyle,
+    distance,
+    setDistance,
   }: any = useContext(AppContext);
 
   // Marker icon //
@@ -71,6 +74,29 @@ export default function MapView() {
       [pos.coords.latitude, pos.coords.longitude],
     ]);
     setGeoLocation([pos.coords.latitude, pos.coords.longitude]);
+
+    console.log(
+      haversineDistance(
+        { lat: 58.968371, lng: 5.7561325 },
+        { lat: 58.968471, lon: 5.7562325 }
+      )
+    );
+    console.log(geoTrackCoordinates);
+
+    // pseudo-kode:
+    // setTotalDistance(
+    // totalDistance + havesineDistance(2 siste objekter i geoTrackCoordinates)
+    // )
+
+    setDistance(
+      (d) =>
+        d +
+        haversineDistance(
+          geoTrackCoordinates.slice(-2),
+          geoTrackCoordinates.slice(-1)
+        )
+    );
+    console.log(distance);
     console.log(geoTrackCoordinates);
     console.log(geoLocation);
   }
@@ -111,7 +137,7 @@ export default function MapView() {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &amp; USGS'
     );
   }
-
+  console.log(geoTrackCoordinates);
   return (
     <>
       <MapContainer
@@ -124,18 +150,22 @@ export default function MapView() {
 
         <Marker position={[geoLocation[0], geoLocation[1]]} icon={customIcon}>
           <Popup>Geolocate</Popup>
+          {/* {console.log(geoTrackCoordinates)} */}
           <Polyline
             positions={geoTrackCoordinates as [number, number][]}
           ></Polyline>
         </Marker>
       </MapContainer>
-      <div id="buttons">
-        <button onClick={centerButton} style={buttonStyle}>
-          Follow
-        </button>
-        <button onClick={button4}>🖋️</button>
-        <button onClick={osm}>OSM</button>
-        <button onClick={watercolor}>MTBMap</button>
+      <div id="panel">
+        <div id="buttons">
+          <button onClick={centerButton} style={buttonStyle}>
+            Follow
+          </button>
+          <button onClick={button4}>🖋️</button>
+          <button onClick={osm}>OSM</button>
+          <button onClick={watercolor}>MTBMap</button>
+        </div>
+        <div id="distance">{distance}m</div>
       </div>
     </>
   );

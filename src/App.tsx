@@ -20,6 +20,7 @@ export default function App() {
     backgroundColor: "#225",
     color: "#fffc",
   });
+  const [distance, setDistance] = useState(0);
 
   return (
     <AppContext.Provider
@@ -36,6 +37,8 @@ export default function App() {
         setCenterMap,
         buttonStyle,
         setButtonStyle,
+        distance,
+        setDistance,
       }}
     >
       <MapView />

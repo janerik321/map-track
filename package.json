@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "haversine-distance": "^1.2.3",
     "leaflet": "^1.9.4",
     "leaflet.locatecontrol": "^0.83.1",
     "react": "^19.0.0-rc.1",
