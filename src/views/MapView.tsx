@@ -27,8 +27,8 @@ export default function MapView() {
     buttonStyle,
     setButtonStyle,
     distance,
-  }: // setDistance,
-  any = useContext(AppContext);
+    setDistance,
+  }: any = useContext(AppContext);
 
   const [drawPath, setDrawPath] = useState(true);
 
@@ -143,19 +143,35 @@ export default function MapView() {
       [geoLocation[0], geoLocation[1]],
       [geoLocation[0], geoLocation[1]],
     ]);
+
+    setDistance(0);
   }
 
   console.log(geoTrackCoordinates);
 
-  // setDistance(
-  //   (d) =>
-  //     d +
-  //     haversineDistance(
-  //       geoTrackCoordinates.slice(-2),
-  //       geoTrackCoordinates.slice(-1)
-  //     )
-  // );
-  // console.log(distance);
+  useEffect(() => {
+    if (geoTrackCoordinates.length > 3) {
+      setDistance(
+        (d: any) =>
+          d +
+          haversineDistance(
+            {
+              lat: geoTrackCoordinates.slice(-3)[0][0],
+              lon: geoTrackCoordinates.slice(-3)[0][1],
+            },
+            {
+              lat: geoTrackCoordinates.slice(-1)[0][0],
+              lon: geoTrackCoordinates.slice(-1)[0][1],
+            }
+          )
+      );
+    }
+    console.log(
+      geoTrackCoordinates.slice(-3)[0],
+      geoTrackCoordinates.slice(-1)[0]
+    );
+    console.log(distance);
+  }, [geoTrackCoordinates]);
 
   return (
     <>
@@ -188,7 +204,10 @@ export default function MapView() {
           <button onClick={watercolor}>MTBMap</button>
           <button onClick={reset}>Reset</button>
         </div>
-        <div id="distance">{distance}m</div>
+        <div id="distance">
+          {distance < 1000 && <div>{Math.round(distance)}m</div>}
+          {distance >= 1000 && <div>{(distance / 1000).toFixed(2)}km</div>}
+        </div>
       </div>
     </>
   );
