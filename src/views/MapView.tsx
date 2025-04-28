@@ -27,8 +27,10 @@ export default function MapView() {
     buttonStyle,
     setButtonStyle,
     distance,
-    setDistance,
-  }: any = useContext(AppContext);
+  }: // setDistance,
+  any = useContext(AppContext);
+
+  const [drawPath, setDrawPath] = useState(true);
 
   // Marker icon //
 
@@ -88,15 +90,6 @@ export default function MapView() {
     // totalDistance + havesineDistance(2 siste objekter i geoTrackCoordinates)
     // )
 
-    setDistance(
-      (d) =>
-        d +
-        haversineDistance(
-          geoTrackCoordinates.slice(-2),
-          geoTrackCoordinates.slice(-1)
-        )
-    );
-    console.log(distance);
     console.log(geoTrackCoordinates);
     console.log(geoLocation);
   }
@@ -123,7 +116,13 @@ export default function MapView() {
     }
   }
 
-  function button4() {}
+  function button4() {
+    if (!drawPath) {
+      setDrawPath(true);
+    } else {
+      setDrawPath(false);
+    }
+  }
 
   function osm() {
     setTileSelection("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
@@ -137,7 +136,27 @@ export default function MapView() {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &amp; USGS'
     );
   }
+
+  function reset() {
+    // Need two sets of coordinates because the polyline expects at least two
+    setGeoTrackCoordinates([
+      [geoLocation[0], geoLocation[1]],
+      [geoLocation[0], geoLocation[1]],
+    ]);
+  }
+
   console.log(geoTrackCoordinates);
+
+  // setDistance(
+  //   (d) =>
+  //     d +
+  //     haversineDistance(
+  //       geoTrackCoordinates.slice(-2),
+  //       geoTrackCoordinates.slice(-1)
+  //     )
+  // );
+  // console.log(distance);
+
   return (
     <>
       <MapContainer
@@ -151,9 +170,12 @@ export default function MapView() {
         <Marker position={[geoLocation[0], geoLocation[1]]} icon={customIcon}>
           <Popup>Geolocate</Popup>
           {/* {console.log(geoTrackCoordinates)} */}
-          <Polyline
-            positions={geoTrackCoordinates as [number, number][]}
-          ></Polyline>
+
+          {drawPath && (
+            <Polyline
+              positions={geoTrackCoordinates as [number, number][]}
+            ></Polyline>
+          )}
         </Marker>
       </MapContainer>
       <div id="panel">
@@ -164,6 +186,7 @@ export default function MapView() {
           <button onClick={button4}>🖋️</button>
           <button onClick={osm}>OSM</button>
           <button onClick={watercolor}>MTBMap</button>
+          <button onClick={reset}>Reset</button>
         </div>
         <div id="distance">{distance}m</div>
       </div>
